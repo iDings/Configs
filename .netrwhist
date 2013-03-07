@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/home/xiang/Server/Droid/droid/code/hi3716M/sdk/HiSTBAndroidV400R001C00SPC050/software/ics/bootable/bootloader/fastboot3.0/arch'
+let g:netrw_dirhist_2='/home/xiang/Server/Droid/droid/code/hi3716M/sdk/HiSTBAndroidV400R001C00SPC050/software/ics/bootable/bootloader/fastboot3.0'
+let g:netrw_dirhist_3='/home/xiang/Server/Droid/droid/code/hi3716M/sdk/HiSTBAndroidV400R001C00SPC050/software/ics/bootable/bootloader/fastboot3.0/lowlevel_reg_info'
+let g:netrw_dirhist_4='/home/xiang/Server/Droid/droid/code/hi3716C/sdk/HiSTBAndroidV400R001C00SPC050/software/ics/packages/inputmethods/PinyinIME/src/com/android/inputmethod/pinyin'
+let g:netrw_dirhist_5='/home/xiang/Server/Droid/droid/code/hi3716C/sdk/HiSTBAndroidV400R001C00SPC050/software/ics/packages/inputmethods/RemoteIME/src/com/huawei/inputmethod/remote'
+let g:netrw_dirhist_6='/home/xiang/Server/Droid/droid/code/hi3716C/sdk/HiSTBAndroidV400R001C00SPC050/software/ics/packages/apps/Browser/src/com/android/browser'
+let g:netrw_dirhist_7='/home/xiang/Server/Droid/droid/code/hi3716C/sdk/HiSTBAndroidV400R001C00SPC050/software/ics/packages/inputmethods/RemoteIME/src/com/huawei/inputmethod/remote'
