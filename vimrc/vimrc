@@ -1,0 +1,156 @@
+" An example for a vimrc file.
+"
+" Maintainer:	Bram Moolenaar <Bram@vim.org>
+" Last change:	2011 Apr 15
+"
+" To use it, copy it to
+"     for Unix and OS/2:  ~/.vimrc
+"	      for Amiga:  s:.vimrc
+"  for MS-DOS and Win32:  $VIM\_vimrc
+"	    for OpenVMS:  sys$login:.vimrc
+
+" When started as "evim", evim.vim will already have done these settings.
+if v:progname =~? "evim"
+  finish
+endif
+
+" Use Vim settings, rather than Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+
+if has("vms")
+  set nobackup		" do not keep a backup file, use versions instead
+else
+  set backup		" keep a backup file
+endif
+set history=50		" keep 50 lines of command line history
+set ruler		" show the cursor position all the time
+set showcmd		" display incomplete commands
+set incsearch		" do incremental searching
+
+" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
+" let &guioptions = substitute(&guioptions, "t", "", "g")
+
+" Don't use Ex mode, use Q for formatting
+map Q gq
+
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+  syntax on
+  set hlsearch
+endif
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  " Also don't do it when the mark is in the first line, that is the default
+  " position when opening a file.
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+  augroup END
+
+else
+
+  set autoindent		" always set autoindenting on
+
+endif " has("autocmd")
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+		  \ | wincmd p | diffthis
+endif
+
+" pattern
+call pathogen#infect()
+
+if has("gui_running")
+" ------------------------------------------------------------------
+ "set background=light
+ "colorscheme solarized
+" ------------------------------------------------------------------
+" The following items are available options, but do not need to be
+" included in your .vimrc as they are currently set to their defaults.
+" let g:solarized_termtrans=0
+" let g:solarized_degrade=0
+" let g:solarized_bold=1
+" let g:solarized_underline=1
+" let g:solarized_italic=1
+" let g:solarized_termcolors=16
+" let g:solarized_contrast="normal"
+" let g:solarized_visibility="normal"
+" let g:solarized_diffmode="normal"
+" let g:solarized_hitrail=0
+" let g:solarized_menu=1
+	"let g:molokai_original = 0
+	set guioptions-=T " remove toolbar
+	set go-=r
+  	"set columns=119
+  	"set lines=38
+endif
+source $VIMRUNTIME/ftplugin/man.vim
+colorscheme Tomorrow-Night-Bright
+"colorscheme earendel
+set hidden
+set guifont=MONACO\ 10
+"set guifont=Ubuntu\ Mono\ for\ Powerline\ 12
+"set guifont=Consolas\ 12
+set fileencodings=utf-8,cp936,big5,latin1
+set nu
+set tabstop=4
+set sw=4
+set scrolloff=3
+" Powerline
+set laststatus=2 " Always display the statusline in all windows
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set rtp+=/home/xiang/.local/lib/python2.7/site-packages/powerline/bindings/vim
+"cscope settings
+set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
+nmap <C-n> 	:cnext<CR>
+nmap <C-p> 	:cprev<CR>
+nmap <C-t> 	:colder<CR>:cc<CR>
+"""""""""""""""Plugins""""""""""""""""""
+"" neocomplcache 
+let g:neocomplcache_enable_at_startup = 1
+" use neocomplcache & clang_complete
+" add neocomplcache option
+let g:neocomplcache_force_overwrite_completefunc=1
+" add clang_complete option
+let g:clang_complete_auto=1
+
+map <silent> <F9> :TagbarToggle<cr>
+map <silent> <F10> :NERDTreeFind<cr>
