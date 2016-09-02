@@ -1,7 +1,7 @@
 " An example for a vimrc file.
 "
 " Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last change:	2011 Apr 15
+" Last change:	2016 Mar 25
 "
 " To use it, copy it to
 "     for Unix and OS/2:  ~/.vimrc
@@ -17,6 +17,7 @@ endif
 " Use Vim settings, rather than Vi settings (much better!).
 " This must be first, because it changes other options as a side effect.
 set nocompatible
+"set hidden
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -24,7 +25,8 @@ set backspace=indent,eol,start
 if has("vms")
   set nobackup		" do not keep a backup file, use versions instead
 else
-  set backup		" keep a backup file
+  set backup		" keep a backup file (restore to previous version)
+  set undofile		" keep an undo file (undo changes after closing)
 endif
 set history=50		" keep 50 lines of command line history
 set ruler		" show the cursor position all the time
@@ -72,10 +74,8 @@ if has("autocmd")
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
   " (happens when dropping a file on gvim).
-  " Also don't do it when the mark is in the first line, that is the default
-  " position when opening a file.
   autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \ if line("'\"") >= 1 && line("'\"") <= line("$") |
     \   exe "normal! g`\"" |
     \ endif
 
@@ -95,65 +95,178 @@ if !exists(":DiffOrig")
 		  \ | wincmd p | diffthis
 endif
 
-filetype off                   " required!
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+if has('langmap') && exists('+langnoremap')
+  " Prevent that the langmap option applies to characters that result from a
+  " mapping.  If unset (default), this may break plugins (but it's backward
+  " compatible).
+  set langnoremap
+endif
 
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
 
-" let Vundle manage Vundle
-" required! 
-Plugin 'gmarik/Vundle.vim'
-
-" My Plugins here:
+" Add optional packages.
 "
-" original repos on github
-Plugin 'tpope/vim-fugitive'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plugin 'tpope/vim-rails.git'
-Plugin 'brookhong/cscope.vim.git'
-Plugin 'xolox/vim-session.git'
-Plugin 'xolox/vim-easytags.git'
-Plugin 'majutsushi/tagbar.git'
-Plugin 'mileszs/ack.vim.git'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'kien/ctrlp.vim.git'
-" vim-scripts repos
-Plugin 'L9'
-Plugin 'FuzzyFinder'
-" non github repos
-Plugin 'git://git.wincent.com/command-t.git'
+" The matchit plugin makes the % command work better, but it is not backwards
+" compatible.
+packadd matchit
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+if &compatible
+  set nocompatible               " Be iMproved
+endif
+set hidden
 
+" Required:
+call plug#begin('~/.vim/plugged')
+
+" Add or remove your Bundles here:
+Plug 'Shougo/vimproc.vim', { 'do': 'make' } 
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
+Plug 'Shougo/vimshell'
+Plug 'Shougo/neomru.vim'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/neoinclude.vim'
+Plug 'hewes/unite-gtags'
+
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
+
+Plug 'flazz/vim-colorschemes'
+Plug 'majutsushi/tagbar'
+Plug 'MattesGroeger/vim-bookmarks'
+Plug 'jiangmiao/auto-pairs'
+Plug 'scrooloose/nerdtree'
+
+Plug 'junegunn/fzf', { 'do' : './install -all' }
+"Plug 'junegunn/fzf.vim'
+
+Plug 'easymotion/vim-easymotion'
+Plug 'dimasg/vim-mark'
+
+Plug 'vim-ctrlspace/vim-ctrlspace'
+Plug 'mileszs/ack.vim'
+Plug 'airblade/vim-rooter'
+"Plug 'bronson/vim-trailing-whitespace'
+"Plug 'ntpeters/vim-better-whitespace'
+"Plug 'ctrlpvim/ctrlp.vim'
+"Plug 'wincent/command-t'
+
+" Required:
+call plug#end()
+
+" Required:
+filetype plugin indent on
+
+"{ Misc Config
+let mapleader = "\<Space>"
+source /usr/share/vim/vim74/ftplugin/man.vim
+set fileencodings=ucs-bom,utf-8,cp936,big5,gb18030,euc-jp,euc-kr,latin1
 set go-=r
 set go-=T
 set go-=L
+set go-=m
 set nu
-set ts=4
-set sw=4
-set scrolloff=3
-set guifont=Ubuntu\ Mono\ 11
-"set guifont=Monaco\ 10
-"set guifont=Inconsolata\ Medium\ 12
-colorscheme Tomorrow-Night-Bright
-"vim bookmark
-let g:vbookmark_bookmarkSaveFile = $HOME . '/.vimbookmark'
-let g:ctrlp_extensions = ['buffertag', 'quickfix', 'dir',
-                          \ 'undo', 'line', 'changes', 'bookmarkdir']
+set ts=2
+set sw=2
+set expandtab
+set scrolloff=2
+set laststatus=2
+"set foldmethod=syntax
+colorscheme solarized
+set background=light
+set viminfo+=!
+"} Misc Config
 
+"{ Bookmark Config
+let g:bookmark_auto_save = 1
+let g:bookmark_sign = '*'
+let g:bookmark_annotation_sign = '!'
+"} Bookmark Config
+
+"{ Unite Config
+let g:unite_source_history_yank_enable = 1
+let g:unite_source_rec_max_cache_files = 0
+
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  " Play nice with supertab
+  let b:SuperTabDisabled=1
+  " Enable navigation with control-j and control-k in insert mode
+  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+endfunction
+" Use ag in unite grep source.
+if executable('ag')
+let g:unite_source_grep_command = 'ag'
+let g:unite_source_grep_default_opts =
+			\ '-i --line-numbers --nocolor --nogroup --hidden --ignore ' .
+			\  '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
+let g:unite_source_grep_recursive_opt = ''
+let g:unite_source_rec_async_command =
+            \ 'ag --follow --nocolor --nogroup --hidden -g ""'
+endif
+call unite#custom#source('file_rec,file_rec/async', 'max_candidates', 0)
+call unite#custom#profile('default', 'context', {
+    \ 'here': 0,
+    \ 'winheight': 12,
+    \ 'prompt_direction': 'top',
+    \ })
+
+nnoremap <leader>ut :<C-u>Unite -buffer-name=files   -start-insert file_rec/async:!<cr>
+nnoremap <leader>uf :<C-u>UniteWithBufferDir -buffer-name=files   -start-insert file<cr>
+nnoremap <leader>ur :<C-u>Unite -buffer-name=mru     -start-insert file_mru<cr>
+nnoremap <leader>uo :<C-u>Unite -buffer-name=outline -start-insert outline<cr>
+nnoremap <leader>uy :<C-u>Unite -buffer-name=yank    history/yank<cr>
+nnoremap <leader>ue :<C-u>Unite -buffer-name=buffer  buffer<cr>
+nnoremap <leader>ug :<C-u>Unite -buffer-name=grep grep<cr>
+nnoremap <leader>ul :<C-u>Unite -buffer-name=local -start-insert line<cr>
+nnoremap <leader>uB :<C-u>Unite -buffer-name=bookmark -start-insert bookmark<cr>
+nnoremap <leader>ub :<C-u>UniteBookmarkAdd<cr>
+nmap <leader>gd :Unite gtags/def
+nmap <leader>gr :Unite gtags/ref
+nmap <leader>gg :Unite gtags/grep
+nmap <leader>gf :Unite gtags/file
+"} End Unite Config
+
+"{ NERDTree
+let NERDTreeQuitOnOpen = 1
+nnoremap <leader>nt :NERDTreeToggle<cr>
+nnoremap <leader>nf :NERDTreeFind<cr>
+"}
+
+"{ Mark
+let g:mwDefaultHighlightingPalette = 'maximum'
+let g:mwAutoLoadMarks = 1 
+let g:mwAutoSaveMarks = 1
+"} End Mark
+
+"{ BookMark
+nmap <leader>bt :BookmarkToggle<cr>
+nmap <leader>ba :BookmarkShowAll<cr>
+nmap <leader>bi :BookmarkAnnotate<cr>
+"}
+
+"{ Tagbar
+nmap <leader>t :TagbarToggle<cr>
+"} End Tagbar
+
+"{Ctrl-Space
+if executable("ag")
+    let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
+endif
+"}
+
+"{ Rooter
+let g:rooter_patterns = ['GTAGS', '.rooter', '.git/']
+let g:rooter_silent_chdir = 1
+"}
+"{ Ack
+"if executable('ag')
+"  let g:ackprg = 'ag --vimgrep'
+"endif
+"}
+
+"{ FZF
+"nmap <leader>ff :Files<cr>
+"nmap <leader>bb :Buffers<cr>
+"}
