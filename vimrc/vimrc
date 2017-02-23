@@ -149,6 +149,7 @@ Plug 'airblade/vim-rooter'
 "Plug 'ntpeters/vim-better-whitespace'
 "Plug 'ctrlpvim/ctrlp.vim'
 "Plug 'wincent/command-t'
+Plug 'tpope/vim-unimpaired'
 
 " Required:
 call plug#end()
@@ -170,6 +171,7 @@ set sw=2
 set expandtab
 set scrolloff=2
 set laststatus=2
+set guifont=mononoki\ bold\ 11
 "set foldmethod=syntax
 colorscheme solarized
 set background=light
